@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>IPFS vs Blockchain</title>
+
+  <!-- Tipografía -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <h1>IPFS / Blockchain System</h1>
+
+  <!-- BOTÓN MODO -->
+  <button id="themeToggle">☼</button>
+</header>
+
+<main class="layout">
+
+  <!-- UPLOAD -->
+  <section class="panel upload">
+    <h2>Upload</h2>
+
+    <input type="file" id="fileInput">
+
+    <div class="mode-select">
+      <label><input type="radio" name="mode" value="ipfs" checked> IPFS</label>
+      <label><input type="radio" name="mode" value="blockchain"> Blockchain</label>
+    </div>
+
+    <button id="uploadBtn">Process</button>
+
+    <p id="status" class="status"></p>
+  </section>
+
+  <!-- RESULTADOS -->
+  <section class="panel results">
+    <h2>Results</h2>
+
+    <div class="result-grid">
+      <div><span>CID</span><span id="cid">-</span></div>
+      <div><span>HASH</span><span id="hash">-</span></div>
+      <div><span>TIME</span><span id="time">-</span></div>
+      <div><span>COST</span><span id="cost">-</span></div>
+    </div>
+  </section>
+
+  <!-- VERIFICACIÓN -->
+  <section class="panel verify">
+    <h2>Verification</h2>
+
+    <div class="verify-input">
+      <input type="text" id="verifyCid" placeholder="CID">
+      <button id="verifyBtn">Check</button>
+    </div>
+
+    <div class="verify-results">
+      <p><span>IPFS</span><span id="ipfsStatus">-</span></p>
+      <p><span>BLOCKCHAIN</span><span id="blockchainStatus">-</span></p>
+      <p><span>TIMESTAMP</span><span id="timestamp">-</span></p>
+      <p><span>INTEGRITY</span><span id="integrity">-</span></p>
+    </div>
+
+    <div id="verdict" class="verdict">-</div>
+  </section>
+
+  <!-- MÉTRICAS -->
+  <section class="panel metrics">
+    <h2>Metrics</h2>
+
+    <canvas id="timeChart"></canvas>
+    <canvas id="costChart"></canvas>
+  </section>
+
+</main>
+
+<footer>
+  <p>Decentralized Verification Interface</p>
+</footer>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/app.js"></script>
+<!-- <script src="js/api.js"></script> -->
+<script src="js/charts.js"></script>
+
+</body>
+</html>
