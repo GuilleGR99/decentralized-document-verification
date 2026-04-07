@@ -4,6 +4,7 @@
 *.synctex.gz
 *.fls
 *.toc
+*.bbl
 samplepaper.pdf
 samplepaper.tex
 .vscode
