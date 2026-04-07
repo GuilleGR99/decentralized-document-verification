@@ -1,0 +1,22 @@
+services:
+
+  ipfs:
+    image: ipfs/kubo:latest
+    container_name: ipfs-node
+    ports:
+      - "5001:5001"
+      - "8080:8080"
+    volumes:
+      - ./ipfs_data:/data/ipfs
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - ipfs
+    environment:
+      - IPFS_API=http://ipfs:5001

@@ -6,3 +6,6 @@
 *.toc
 samplepaper.pdf
 samplepaper.tex
+.vscode
+node_modules/
+ipfs_data/

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>IPFS vs Blockchain</title>
 
-  <!-- Tipografía -->
+  <!-- Tipografia -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
@@ -14,7 +14,7 @@
 <header>
   <h1>IPFS / Blockchain System</h1>
 
-  <!-- BOTÓN MODO -->
+  <!-- BOTON MODO -->
   <button id="themeToggle">☼</button>
 </header>
 
@@ -31,31 +31,33 @@
       <label><input type="radio" name="mode" value="blockchain"> Blockchain</label>
     </div>
 
-    <button id="uploadBtn">Process</button>
+    <button id="uploadBtn" type="button">Process</button>
 
     <p id="status" class="status"></p>
   </section>
 
   <!-- RESULTADOS -->
-  <section class="panel results">
-    <h2>Results</h2>
+<section class="panel results">
+  <h2>Results</h2>
 
-    <div class="result-grid">
-      <div><span>CID</span><span id="cid">-</span></div>
-      <div><span>HASH</span><span id="hash">-</span></div>
-      <div><span>TIME</span><span id="time">-</span></div>
-      <div><span>COST</span><span id="cost">-</span></div>
-    </div>
-  </section>
+  <div class="result-grid">
+    <div><span>CID</span><span id="cid">-</span></div>
+    <div><span>HASH</span><span id="hash">-</span></div>
+    <div><span>TIME</span><span id="time">-</span></div>
+    <div><span>COST</span><span id="cost">-</span></div>
+  </div>
 
-  <!-- VERIFICACIÓN -->
+  <!-- BOTON DESCARGA -->
+  <button onclick="downloadFile()" type="button">Download</button>
+</section>
+
+  <!-- VERIFICACION -->
   <section class="panel verify">
     <h2>Verification</h2>
 
     <div class="verify-input">
       <input type="text" id="verifyCid" placeholder="CID">
-      <button id="verifyBtn">Check</button>
-    </div>
+      <button id="verifyBtn" type="button">Check</button>    </div>
 
     <div class="verify-results">
       <p><span>IPFS</span><span id="ipfsStatus">-</span></p>
@@ -67,7 +69,7 @@
     <div id="verdict" class="verdict">-</div>
   </section>
 
-  <!-- MÉTRICAS -->
+  <!-- METRICAS -->
   <section class="panel metrics">
     <h2>Metrics</h2>
 
@@ -82,10 +84,7 @@
 </footer>
 
 <!-- JS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="js/app.js"></script>
-<!-- <script src="js/api.js"></script> -->
-<script src="js/charts.js"></script>
 
 </body>
 </html>

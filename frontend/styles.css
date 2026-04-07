@@ -2,7 +2,7 @@
    VARIABLES DE TEMA
 ========================= */
 :root {
-  /* DARK (OLED) */
+  /* DARK MODE */
   --bg: #000000;
   --panel: #000000;
   --border: rgba(255,255,255,0.08);
@@ -55,7 +55,7 @@ header h1 {
   text-transform: uppercase;
 }
 
-/* BOTÓN TEMA */
+/* BOTON TEMA */
 #themeToggle {
   position: absolute;
   top: 15px;
@@ -185,8 +185,13 @@ button:hover {
   font-size: 0.85rem;
 }
 
+.results button {
+  margin-top: 15px;
+  width: 100%;
+}
+
 /* =========================
-   VERIFICACIÓN
+   VERIFICACION
 ========================= */
 .verify-input {
   display: flex;
@@ -237,7 +242,7 @@ footer {
    DETALLE VISUAL GLOBAL
 ========================= */
 
-/* Línea vertical central */
+/* Linea vertical central */
 body::before {
   content: "";
   position: fixed;
