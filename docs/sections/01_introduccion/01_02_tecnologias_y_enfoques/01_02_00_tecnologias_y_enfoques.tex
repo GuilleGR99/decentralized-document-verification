@@ -1,0 +1,46 @@
+\subsection{Tecnologías y enfoques}
+
+Con el objetivo de abordar las limitaciones de los sistemas 
+centralizados, han surgido diversas tecnologías descentralizadas 
+orientadas a mejorar la disponibilidad, integridad y verificabilidad 
+de los datos. Entre ellas, destacan los sistemas de almacenamiento 
+distribuido basados en contenido y las redes blockchain, 
+que representan dos enfoques complementarios para la gestión 
+de información en entornos sin confianza.
+
+El sistema \textit{InterPlanetary File System} (IPFS) propone un 
+modelo de almacenamiento distribuido en el que los ficheros se 
+identifican mediante hashes criptográficos derivados de su contenido, 
+en lugar de mediante ubicaciones físicas~\cite{benet2014ipfs}.
+Este enfoque permite garantizar la integridad de los datos y 
+facilita su distribución eficiente entre nodos de la red. 
+Además, IPFS mejora la disponibilidad de los ficheros, 
+ya que estos pueden ser replicados y servidos desde múltiples nodos, 
+eliminando la dependencia de un servidor central.
+
+Por otro lado, las tecnologías blockchain introducen un modelo de 
+registro distribuido e inmutable que permite almacenar información 
+de forma verificable y resistente a manipulaciones. En particular,
+plataformas como Ethereum permiten ejecutar contratos inteligentes
+y registrar datos de manera transparente en una red 
+descentralizada~\cite{wood2014ethereum}. 
+Sin embargo, debido a las limitaciones de escalabilidad 
+y al coste asociado al almacenamiento en blockchain,
+no resulta eficiente almacenar directamente grandes 
+volúmenes de datos en estas redes.
+
+Como consecuencia, han surgido enfoques híbridos que combinan
+ambas tecnologías con el fin de aprovechar sus ventajas respectivas.
+En estos sistemas, los ficheros se almacenan en redes
+distribuidas como IPFS, mientras que sus identificadores (hashes)
+se registran en blockchain para garantizar su autenticidad 
+e inmutabilidad. Este modelo permite desacoplar el 
+almacenamiento de datos del mecanismo de verificación,
+logrando un equilibrio entre eficiencia, coste y seguridad.
+
+Este trabajo adopta este enfoque híbrido mediante el 
+desarrollo de un sistema que integra almacenamiento descentralizado 
+basado en IPFS con un mecanismo de verificación implementado 
+sobre una red blockchain local. Este planteamiento permite evaluar 
+de forma controlada el comportamiento de ambas tecnologías y 
+analizar sus compromisos en términos de rendimiento y funcionalidad.

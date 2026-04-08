@@ -18,6 +18,8 @@
 % so please use T1 fonts in your manuscript whenever possible.
 % Other font encondings may result in incorrect characters.
 %
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{graphicx}
 % Used for displaying a sample figure. If possible, figure files should
 % be included in EPS format.
@@ -30,7 +32,7 @@
 %
 \begin{document}
 %
-\title{Evaluación de IPFS y Blockchain: Modelos de Almacenamiento y Distribución de Datos}
+\title{Evaluación Experimental de IPFS y Blockchain para el Almacenamiento y Verificación de Datos}
 \titlerunning{Evaluación de IPFS y Blockchain}
 %\titlerunning{Abbreviated paper title}
 % If the paper title is too long for the running head, you can set
@@ -64,16 +66,16 @@ centrada en sus modelos de almacenamiento y distribución de datos.
 \cleardoublepage
 %
 \section{Introducción}
-
 \input{sections/01_introduccion/01_01_contexto_y_problematica/01_01_00_contexto_y_problematica}
-
-
-\subsection{Tecnologias y enfoques}
-
-\subsection{Objetivos y contribuciones}
-
+\input{sections/01_introduccion/01_02_tecnologias_y_enfoques/01_02_00_tecnologias_y_enfoques.tex}
+\input{sections/01_introduccion/01_03_objetivos_y_contribuciones/01_03_00_tecnologias_y_enfoques.tex}
 
 \section{Estado del arte}
+\input{sections/02_estado_del_arte/02_01_sistemas_de_almacenamiento_distribuido/02_01_00_sistemas_de_almacenamiento_distribuido.tex}
+\input{sections/02_estado_del_arte/02_02_tecnologias_blockchain_para_verificacion/02_02_00_tecnologias_blockchain_para_verificacion.tex}
+\input{sections/02_estado_del_arte/02_03_soluciones_hibridas_ipfs_blockchain/02_03_00_soluciones_hibridas_ipfs_blockchain.tex}
+\input{sections/02_estado_del_arte/02_04_comparativa_y_posicionamiento_del_trabajo/02_04_00_comparativa_y_posicionamiento_del_trabajo.tex}
+
 
 \section{Arquitectura de IPFS y Blockchain}
 

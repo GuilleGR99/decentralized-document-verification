@@ -1,0 +1,42 @@
+\subsection{Objetivo y contribuciones}
+
+El objetivo principal de este trabajo es diseñar, desarrollar y evaluar un sistema 
+descentralizado para el almacenamiento y verificación de ficheros, basado en la
+integración de tecnologías de almacenamiento distribuido y registro inmutable.
+En particular, se propone una solución que permite almacenar documentos en 
+IPFS y registrar sus identificadores criptográficos en una red blockchain, 
+con el fin de garantizar su integridad y verificabilidad.
+
+A diferencia de soluciones que emplean redes públicas, en este trabajo 
+se utiliza una infraestructura blockchain local basada en Hardhat, 
+lo que permite un entorno de experimentación controlado y reproducible. 
+Este enfoque facilita el análisis del comportamiento del sistema sin las 
+limitaciones derivadas de costes económicos o latencias variables propias 
+de redes públicas, centrando el estudio en aspectos técnicos como el rendimiento 
+y la eficiencia.
+
+El sistema desarrollado incluye una interfaz de usuario basada en tecnologías
+web (HTML, CSS y JavaScript) que permite interactuar con ambas capas del 
+sistema: almacenamiento en IPFS y registro en blockchain. A través de esta interfaz,
+el usuario puede almacenar ficheros, recuperar información 
+y verificar la autenticidad de los datos mediante la comparación de hashes.
+
+Además del desarrollo del prototipo, este trabajo define un conjunto de 
+métricas orientadas a evaluar el comportamiento del sistema. 
+Entre ellas se incluyen el tiempo de almacenamiento, el tiempo de recuperación, 
+el impacto del tamaño del fichero en el rendimiento y el coste temporal añadido
+por el uso de blockchain. Estas métricas permiten realizar una comparación 
+objetiva entre el uso exclusivo de IPFS y el enfoque híbrido propuesto.
+
+Las principales contribuciones de este trabajo pueden resumirse en los 
+siguientes puntos. (I) Diseño e implementación de un sistema
+funcional que integra almacenamiento descentralizado y verificación basada 
+en blockchain. (II) Definición de un marco experimental que
+permite medir y comparar el rendimiento de ambas tecnologías. (III) Análisis crítico de los resultados obtenidos, identificando las ventajas,
+limitaciones y compromisos asociados al uso combinado de IPFS y 
+blockchain en escenarios reales.
+
+En conjunto, este trabajo proporciona una base experimental que 
+permite analizar de forma sistemática las ventajas y limitaciones 
+de los enfoques descentralizados actuales, contribuyendo a una 
+mejor comprensión de su aplicabilidad en sistemas reales.

@@ -4,6 +4,7 @@
 *.synctex.gz
 *.fls
 *.toc
+*.blg
 *.bbl
 samplepaper.pdf
 samplepaper.tex
