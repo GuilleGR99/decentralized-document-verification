@@ -2,7 +2,9 @@ import express from 'express';
 import multer from 'multer';
 import crypto from 'crypto';
 import { uploadToIPFS, persistCID } from '../services/ipfsService.js';
-import {verifyCID, storeCID } from "../services/blockchainService.js";
+import { verifyCID, storeCID } from "../services/blockchainService.js";
+import { measureTime, measureTimeOnly } from '../utils/metrics.js';
+
 const router = express.Router();
 const upload = multer();
 
@@ -12,6 +14,8 @@ router.post('/ipfs', upload.single('file'), async (req, res) => {
             return res.status(400).json({ error: "No file provided" });
         }
 
+        const totalStart = performance.now();
+
         const fileBuffer = req.file.buffer;
 
         const hash = crypto
@@ -19,41 +23,56 @@ router.post('/ipfs', upload.single('file'), async (req, res) => {
             .update(fileBuffer)
             .digest('hex');
 
-        const start = performance.now();
+        // --- IPFS ---
+        const { result: ipfsResult, time: ipfsTime } =
+            await measureTime(() => uploadToIPFS(fileBuffer));
 
-        const result = await uploadToIPFS(fileBuffer);
+        // --- Blockchain ---
+        const {
+            result: txResult,
+            time: blockchainTime
+        } = await measureTime(() => storeCID(ipfsResult.cid));
 
-        const stored = await storeCID(result.cid);
-
-        if (stored) {
-            persistCID(result.cid);
+        // Persistencia SOLO si éxito real
+        if (txResult.success) {
+            persistCID(ipfsResult.cid);
         }
 
-        persistCID(result.cid);
+        // --- Verificación ---
+        const verifyTime =
+            await measureTimeOnly(() => verifyCID(ipfsResult.cid));
 
-        const end = performance.now();
+        const [exists, timestamp] = await verifyCID(ipfsResult.cid);
 
-        // Verificar correcto almacenamiento
-        const [exists, timestamp] = await verifyCID(result.cid);
+        const totalTime = performance.now() - totalStart;
 
         res.json({
-            cid: result.cid,
+            cid: ipfsResult.cid,
             hash,
             size: req.file.size,
-            time: (end - start).toFixed(2),
+
+            metrics: {
+                ipfsTime: ipfsTime.toFixed(2),
+                blockchainTime: blockchainTime.toFixed(2),
+                verifyTime: verifyTime.toFixed(2),
+                totalTime: totalTime.toFixed(2),
+
+                gasUsed: txResult.gasUsed.toString()
+            },
+
             ipfs: true,
             blockchain: exists,
             timestamp: timestamp.toString()
         });
 
-        } catch (error) {
-            console.error(error);
+    } catch (error) {
+        console.error(error);
 
-            res.status(500).json({ 
-                error: error.message,
-                stack: error.stack
-            });
-        }
+        res.status(500).json({ 
+            error: error.message,
+            stack: error.stack
+        });
+    }
 });
 
 export default router;

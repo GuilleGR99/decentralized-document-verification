@@ -1,5 +1,4 @@
 import { ethers } from "ethers";
-import { persistCID } from "./ipfsService.js";
 import fs from "fs/promises";
 
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
@@ -47,17 +46,15 @@ async function waitForFile(path, timeout = 20000) {
   }
 }
 
-// Espera a que el contrato esté realmente desplegado
+// Espera a que el contrato esté desplegado
 async function waitForContract(address, timeout = 20000) {
   const start = Date.now();
 
   while (true) {
     try {
       const code = await provider.getCode(address);
-
       if (code !== "0x") return;
-    } catch {
-    }
+    } catch {}
 
     if (Date.now() - start > timeout) {
       throw new Error("Timeout waiting for contract deployment");
@@ -69,7 +66,7 @@ async function waitForContract(address, timeout = 20000) {
 
 // Inicialización controlada
 async function initContract() {
-  await waitForRPC();        
+  await waitForRPC();
   await waitForFile(filePath);
 
   const { address } = JSON.parse(await fs.readFile(filePath));
@@ -93,12 +90,20 @@ export async function storeCID(cid) {
     const contract = await contractPromise;
 
     const tx = await contract.store(cid);
-    await tx.wait();
-    persistCID(cid); // permite la persistencia del CID en el volumen
-    return true;
+    const receipt = await tx.wait();
+
+    return {
+      success: true,
+      gasUsed: receipt.gasUsed
+    };
+
   } catch (error) {
     console.log("STORE ERROR:", error.message);
-    return false;
+
+    return {
+      success: false,
+      gasUsed: 0n
+    };
   }
 }
 
@@ -107,11 +112,8 @@ export async function verifyCID(cid) {
     const contract = await contractPromise;
 
     return await contract.verify(cid);
+
   } catch (error) {
-    if (error.message.includes("Already exists")) {
-      return { status: "duplicate" };
-    }
-    
     console.log("VERIFY ERROR:", error.message);
     return [false, 0];
   }
