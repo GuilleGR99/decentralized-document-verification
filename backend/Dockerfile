@@ -1,18 +1,15 @@
-FROM node:18
+FROM node:22
 
 WORKDIR /app
 
-# copiar dependencies backend
-COPY backend/package*.json ./backend/
-WORKDIR /app/backend
+# dependencias
+COPY backend/package*.json ./
 RUN npm install
 
-# copiar todo el proyecto
-WORKDIR /app
-COPY . .
-
-WORKDIR /app/backend
+# código
+COPY backend ./backend
+COPY frontend ./frontend
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["node", "backend/server.js"]

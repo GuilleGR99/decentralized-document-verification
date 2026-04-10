@@ -1,8 +1,8 @@
 import { create } from 'ipfs-http-client';
+import fs from "fs";
 
-const ipfs = create({
-    url: process.env.IPFS_API || 'http://127.0.0.1:5001'
-});
+const ipfs = create({ url: "http://ipfs:5001" })
+const REGISTRY_PATH = "/shared/registry.json";
 
 export async function uploadToIPFS(fileBuffer) {
     const result = await ipfs.add(fileBuffer, {
@@ -34,5 +34,23 @@ export async function existsInIPFS(cid) {
     } catch {
         return false;
     }
+}
+
+function loadRegistry() {
+  if (!fs.existsSync(REGISTRY_PATH)) return [];
+  return JSON.parse(fs.readFileSync(REGISTRY_PATH));
+}
+
+function saveRegistry(data) {
+  fs.writeFileSync(REGISTRY_PATH, JSON.stringify(data, null, 2));
+}
+
+export function persistCID(cid) {
+  const registry = loadRegistry();
+
+  if (!registry.includes(cid)) {
+    registry.push(cid);
+    saveRegistry(registry);
+  }
 }
 

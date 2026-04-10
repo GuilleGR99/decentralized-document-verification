@@ -11,3 +11,20 @@ samplepaper.tex
 .vscode
 node_modules/
 ipfs_data/
+node_modules
+.env
+
+# Hardhat files
+blockchain/cache/
+blockchain/artifacts/
+
+# TypeChain files
+typechain/
+typechain-types/
+
+# solidity-coverage files
+coverage/
+/coverage.json
+
+# Hardhat Ignition default folder for deployments against a local node
+blockchain/ignition/deployments/chain-31337

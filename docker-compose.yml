@@ -1,22 +1,59 @@
+version: "3.9"
+
 services:
 
-  ipfs:
-    image: ipfs/kubo:latest
-    container_name: ipfs-node
-    ports:
-      - "5001:5001"
-      - "8080:8080"
+  hardhat-node:
+    build: ./blockchain
+    working_dir: /app
     volumes:
-      - ./ipfs_data:/data/ipfs
+      - shared-data:/shared
+    command: npx hardhat node --hostname 0.0.0.0
+    ports:
+      - "8545:8545"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/8545"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+
+  deployer:
+    build: ./blockchain
+    working_dir: /app
+    volumes:
+      - shared-data:/shared
+    depends_on:
+      hardhat-node:
+        condition: service_healthy
+    environment:
+      - RPC_URL=http://hardhat-node:8545
+    command: npx hardhat run scripts/deploy.js --network localhost
 
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    container_name: backend
+    depends_on:
+      hardhat-node:
+        condition: service_healthy
+      deployer:
+        condition: service_completed_successfully
+    volumes:
+      - shared-data:/shared
+    environment:
+      - CONTRACT_FILE=/shared/deployed.json
+      - RPC_URL=http://hardhat-node:8545
     ports:
       - "3000:3000"
-    depends_on:
-      - ipfs
-    environment:
-      - IPFS_API=http://ipfs:5001
+
+  ipfs:
+    image: ipfs/kubo:latest
+    container_name: ipfs
+    ports:
+      - "5001:5001"
+      - "8080:8080"
+    volumes:
+      - ipfs-data:/data/ipfs
+
+volumes:
+  shared-data:
+  ipfs-data:
