@@ -60,12 +60,28 @@
   <!-- METRICAS -->
   <section class="panel metrics">
     <h2>Metrics</h2>
+
     <div class="metrics">
-      <div><span>Tiempo IPFS</span><span id="ipfsTime">-</span></div>
-      <div><span>Tiempo BLOCKCHAIN</span><span id="blockchainTime">-</span></div>
-      <div><span>Tiempo Verificación</span><span id="verifyTime">-</span></div>
-      <div><span>Tiempo Total</span><span id="totalTime">-</span></div>
-      <div><span>Gas usado</span><span id="gasUsed">-</span></div>
+
+      <!-- CONTENEDOR DE GRAFICAS -->
+      <div class="charts-container">
+        <div class="chart-box">
+          <canvas id="timeChart"></canvas>
+        </div>
+        <div class="chart-box">
+          <canvas id="gasChart"></canvas>
+        </div>
+      </div>
+
+      <!-- METRICAS NUMERICAS -->
+      <div class="metrics-grid">
+        <div><span>IPFS</span><span id="ipfsTime">-</span></div>
+        <div><span>Blockchain</span><span id="blockchainTime">-</span></div>
+        <div><span>Verify</span><span id="verifyTime">-</span></div>
+        <div><span>Total</span><span id="totalTime">-</span></div>
+        <div><span>Gas</span><span id="gasUsed">-</span></div>
+      </div>
+
     </div>
   </section>
 
@@ -76,6 +92,7 @@
 </footer>
 
 <!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="js/app.js"></script>
 
 </body>

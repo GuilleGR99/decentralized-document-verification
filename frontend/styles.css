@@ -193,6 +193,27 @@ button:hover {
 }
 
 /* =========================
+   CHARTS CONTAINER
+========================= */
+.charts-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+/* Cada gráfica */
+.chart-box {
+  height: 220px;
+  position: relative;
+}
+
+/* Canvas controlado */
+.chart-box canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+/* =========================
    HISTORIAL
 ========================= */
 .cid-container {
