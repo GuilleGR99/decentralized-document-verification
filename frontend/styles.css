@@ -89,7 +89,7 @@ header h1 {
 /* POSICIONES */
 .upload { grid-column: 1; grid-row: 1; }
 .results { grid-column: 2; grid-row: 1; }
-.verify { grid-column: 1; grid-row: 2; }
+#cid-panel { grid-column: 1; grid-row: 2; }
 .metrics { grid-column: 2; grid-row: 2; }
 
 /* Quitar bordes */
@@ -98,7 +98,7 @@ header h1 {
   border-right: none;
 }
 
-.verify,
+#cid-panel,
 .metrics {
   border-bottom: none;
 }
@@ -129,16 +129,6 @@ input[type="text"] {
 
 input::placeholder {
   color: var(--text-dim);
-}
-
-/* =========================
-   RADIO
-========================= */
-.mode-select {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 15px;
-  font-size: 0.8rem;
 }
 
 /* =========================
@@ -185,46 +175,68 @@ button:hover {
   font-size: 0.85rem;
 }
 
-.results button {
-  margin-top: 15px;
-  width: 100%;
-}
-
 /* =========================
-   VERIFICACION
+   METRICS
 ========================= */
-.verify-input {
+.metrics-grid {
   display: flex;
+  flex-direction: column;
   gap: 10px;
-  margin-bottom: 15px;
 }
 
-.verify-results p {
+.metrics-grid div {
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid var(--border);
-  padding: 6px 0;
-  font-size: 0.8rem;
+  padding-bottom: 6px;
+  font-size: 0.85rem;
 }
 
 /* =========================
-   VEREDICTO
+   HISTORIAL
 ========================= */
-.verdict {
-  margin-top: 15px;
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-/* =========================
-   CANVAS
-========================= */
-canvas {
-  margin-top: 15px;
-  border-top: 1px solid var(--border);
-  padding-top: 10px;
+.cid-container {
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  padding: 10px;
+  border-radius: 6px;
   background: var(--panel);
+}
+
+#cidList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#cidList li {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  font-family: monospace;
+  font-size: 0.8rem;
+  word-break: break-all;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#cidList li:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.light-mode #cidList li:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+.cid-search {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.75rem;
 }
 
 /* =========================
@@ -236,20 +248,4 @@ footer {
   font-size: 0.7rem;
   color: var(--text-dim);
   border-top: 1px solid var(--border);
-}
-
-/* =========================
-   DETALLE VISUAL GLOBAL
-========================= */
-
-/* Linea vertical central */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 50%;
-  width: 1px;
-  height: 100%;
-  background: var(--border);
-  opacity: 0.4;
 }

@@ -26,55 +26,47 @@
 
     <input type="file" id="fileInput">
 
-    <div class="mode-select">
-      <label><input type="radio" name="mode" value="ipfs" checked> IPFS</label>
-      <label><input type="radio" name="mode" value="blockchain"> Blockchain</label>
-    </div>
-
     <button id="uploadBtn" type="button">Process</button>
 
     <p id="status" class="status"></p>
   </section>
 
   <!-- RESULTADOS -->
-<section class="panel results">
-  <h2>Results</h2>
+  <section class="panel results">
+    <h2>Results</h2>
 
-  <div class="result-grid">
-    <div><span>CID</span><span id="cid">-</span></div>
-    <div><span>HASH</span><span id="hash">-</span></div>
-    <div><span>TIME</span><span id="time">-</span></div>
-    <div><span>COST</span><span id="cost">-</span></div>
-  </div>
-
-  <!-- BOTON DESCARGA -->
-  <button onclick="downloadFile()" type="button">Download</button>
-</section>
-
-  <!-- VERIFICACION -->
-  <section class="panel verify">
-    <h2>Verification</h2>
-
-    <div class="verify-input">
-      <input type="text" id="verifyCid" placeholder="CID">
-      <button id="verifyBtn" type="button">Check</button>    </div>
-
-    <div class="verify-results">
-      <p><span>IPFS</span><span id="ipfsStatus">-</span></p>
-      <p><span>BLOCKCHAIN</span><span id="blockchainStatus">-</span></p>
-      <p><span>TIMESTAMP</span><span id="timestamp">-</span></p>
-      <p><span>INTEGRITY</span><span id="integrity">-</span></p>
+    <div class="result-grid">
+      <div><span>CID</span><span id="cid">-</span></div>
+      <div><span>HASH</span><span id="hash">-</span></div>
     </div>
+  </section>
 
-    <div id="verdict" class="verdict">-</div>
+  <!-- HISTORICO -->
+  <section id="cid-panel" class="panel">
+    <h2>Histórico de CIDs</h2>
+
+    <input 
+      type="text" 
+      id="cidSearch" 
+      placeholder="Buscar CID..." 
+      class="cid-search"
+    >
+
+    <div class="cid-container">
+      <ul id="cidList"></ul>
+    </div>
   </section>
 
   <!-- METRICAS -->
   <section class="panel metrics">
     <h2>Metrics</h2>
-
-    <canvas id="timeChart"></canvas>
-    <canvas id="costChart"></canvas>
+    <div class="metrics">
+      <div><span>Tiempo IPFS</span><span id="ipfsTime">-</span></div>
+      <div><span>Tiempo BLOCKCHAIN</span><span id="blockchainTime">-</span></div>
+      <div><span>Tiempo Verificación</span><span id="verifyTime">-</span></div>
+      <div><span>Tiempo Total</span><span id="totalTime">-</span></div>
+      <div><span>Gas usado</span><span id="gasUsed">-</span></div>
+    </div>
   </section>
 
 </main>
