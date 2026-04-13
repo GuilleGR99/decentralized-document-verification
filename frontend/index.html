@@ -29,17 +29,34 @@
     <button id="uploadBtn" type="button">Process</button>
 
     <p id="status" class="status"></p>
-  </section>
-
-  <!-- RESULTADOS -->
-  <section class="panel results">
-    <h2>Results</h2>
 
     <div class="result-grid">
       <div><span>CID</span><span id="cid">-</span></div>
       <div><span>HASH</span><span id="hash">-</span></div>
     </div>
+    
   </section>
+
+  <!-- RESULTADOS -->
+  <section class="panel verification">
+    <h2>Verification</h2>
+
+    <input 
+      type="text" 
+      id="verifyInput" 
+      placeholder="Introduce un CID..."
+      class="cid-search"
+    >
+
+    <button id="verifyBtn">Verify</button>
+
+    <p id="verifyStatus" class="status"></p>
+
+    <div class="result-grid">
+      <div><span>Exists</span><span id="verifyExists">-</span></div>
+      <div><span>Timestamp</span><span id="verifyTimestamp">-</span></div>
+    </div>
+</section>
 
   <!-- HISTORICO -->
   <section id="cid-panel" class="panel">

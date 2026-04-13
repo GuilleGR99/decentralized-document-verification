@@ -1,7 +1,15 @@
+// =========================
+// ELEMENTOS
+// =========================
 const uploadBtn = document.getElementById("uploadBtn");
+const toggleBtn = document.getElementById("themeToggle");
+const verifyBtn = document.getElementById("verifyBtn");
+
+// =========================
+// EVENTOS
+// =========================
 uploadBtn.addEventListener("click", handleUpload);
 
-const toggleBtn = document.getElementById("themeToggle");
 toggleBtn.addEventListener("click", () => {
     document.body.classList.toggle("light-mode");
 
@@ -11,8 +19,14 @@ toggleBtn.addEventListener("click", () => {
     toggleBtn.textContent = isLight ? "🌙" : "☀️";
 });
 
+verifyBtn.addEventListener("click", handleVerify);
+
+// =========================
+// ESTADO
+// =========================
 let allCIDs = [];
-let chart;
+let timeChart;
+let gasChart;
 
 // =========================
 // INIT
@@ -77,25 +91,14 @@ async function handleUpload() {
 
         document.getElementById("status").textContent = "Upload complete";
 
-        // Mostrar métricas en panel
+        // métricas
         if (data.metrics) {
             renderMetrics(data.metrics);
         }
 
-        // Actualizar gráfica
+        // refrescos
         await renderChart();
-
-        // Actualizar listado de CIDs
         await loadCIDList();
-
-        // Mantener filtro activo si existe
-        const query = document.getElementById("cidSearch").value.toLowerCase();
-        if (query) {
-            const filtered = allCIDs.filter(cid =>
-                cid.toLowerCase().includes(query)
-            );
-            renderCIDList(filtered);
-        }
 
     } catch (error) {
         console.error(error);
@@ -103,6 +106,52 @@ async function handleUpload() {
     }
 }
 
+// =========================
+// VERIFY
+// =========================
+async function handleVerify() {
+    const cid = document.getElementById("verifyInput").value.trim();
+
+    if (!cid) {
+        alert("Introduce un CID");
+        return;
+    }
+
+    const statusEl = document.getElementById("verifyStatus");
+    statusEl.textContent = "Verifying...";
+
+    try {
+        const res = await fetch("/verify", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ cid })
+        });
+
+        if (!res.ok) {
+            throw new Error("Error en verificación");
+        }
+
+        const data = await res.json();
+
+        document.getElementById("verifyExists").textContent =
+            data.exists ? "YES" : "NO";
+
+        document.getElementById("verifyTimestamp").textContent =
+            data.formattedTimestamp || "-";
+
+        statusEl.textContent = "Verification complete";
+
+    } catch (error) {
+        console.error(error);
+        statusEl.textContent = error.message || "Error";
+    }
+}
+
+// =========================
+// METRICS
+// =========================
 function renderMetrics(metrics) {
     document.getElementById("ipfsTime").textContent = metrics.ipfsTime;
     document.getElementById("blockchainTime").textContent = metrics.blockchainTime;
@@ -119,6 +168,9 @@ function resetMetrics() {
         });
 }
 
+// =========================
+// CID LIST
+// =========================
 async function loadCIDList() {
     try {
         const res = await fetch("/upload/cids");
@@ -146,25 +198,32 @@ function renderCIDList(cids) {
         li.textContent = cid;
         li.style.cursor = "pointer";
 
-        li.addEventListener("click", () => {
-            window.open(`http://localhost:3000/download/${cid}`);
+        li.addEventListener("dblclick", () => {
+            window.open(`/download/${cid}`);
         });
+
+        li.addEventListener("click", async () => {
+            document.getElementById("verifyInput").value = cid;
+            await handleVerify();
+        });
+
 
         list.appendChild(li);
     });
 
-    // Solo auto-scroll si no hay filtro
     if (cids.length === allCIDs.length) {
         list.parentElement.scrollTop = list.parentElement.scrollHeight;
     }
 }
 
+// =========================
+// CHARTS
+// =========================
 async function loadMetricsHistory() {
     const res = await fetch("/upload/metrics");
     return await res.json();
 }
-let timeChart;
-let gasChart;
+
 async function renderChart() {
     const data = await loadMetricsHistory();
     if (!data || data.length === 0) return;
@@ -178,9 +237,8 @@ async function renderChart() {
 
     const textColor = getComputedStyle(document.body).getPropertyValue('--text');
 
-    // --- TIME CHART ---
+    // TIME CHART
     const timeCtx = document.getElementById("timeChart");
-
     if (timeChart) timeChart.destroy();
 
     timeChart = new Chart(timeCtx, {
@@ -206,9 +264,8 @@ async function renderChart() {
         }
     });
 
-    // --- GAS CHART ---
+    // GAS CHART
     const gasCtx = document.getElementById("gasChart");
-
     if (gasChart) gasChart.destroy();
 
     gasChart = new Chart(gasCtx, {
