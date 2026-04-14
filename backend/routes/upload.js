@@ -2,6 +2,8 @@ import express from 'express';
 import multer from 'multer';
 import crypto from 'crypto';
 import fs from "fs";
+import pdfParse from "pdf-parse";
+import OpenAI from "openai";
 
 import { uploadToIPFS, persistCID } from '../services/ipfsService.js';
 import { verifyCID, storeCID } from "../services/blockchainService.js";
@@ -10,6 +12,8 @@ import { persistMetrics, getMetrics } from '../services/metricsService.js';
 
 const router = express.Router();
 const upload = multer();
+const aiResults = {};
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 router.post('/ipfs', upload.single('file'), async (req, res) => {
     try {
@@ -25,9 +29,14 @@ router.post('/ipfs', upload.single('file'), async (req, res) => {
             .update(fileBuffer)
             .digest('hex');
 
+        aiResults[hash] = { status: "pending", data: null };
+
         // --- IPFS ---
         const { result: ipfsResult, time: ipfsTime } =
             await measureTime(() => uploadToIPFS(fileBuffer));
+
+        // lanzar async DESPUÉS de IPFS
+        processDocumentAsync(hash, fileBuffer);
 
         // --- Verificacion previa ---
         const [existsBefore] = await verifyCID(ipfsResult.cid);
@@ -35,7 +44,6 @@ router.post('/ipfs', upload.single('file'), async (req, res) => {
         let txResult = { success: false, gasUsed: 0n };
         let blockchainTime = 0;
 
-        // --- Blockchain solo si no existe ---
         if (!existsBefore) {
             const measured = await measureTime(() => storeCID(ipfsResult.cid));
             txResult = measured.result;
@@ -47,10 +55,8 @@ router.post('/ipfs', upload.single('file'), async (req, res) => {
         const [exists, timestamp] = await verifyCID(ipfsResult.cid);
         const verifyTime = performance.now() - verifyStart;
 
-        // --- Total ---
         const totalTime = performance.now() - totalStart;
 
-        // --- Persistencia ---
         persistCID(ipfsResult.cid);
 
         persistMetrics({
@@ -70,7 +76,6 @@ router.post('/ipfs', upload.single('file'), async (req, res) => {
             cid: ipfsResult.cid,
             hash,
             size: req.file.size,
-
             metrics: {
                 ipfsTime: ipfsTime.toFixed(2),
                 blockchainTime: blockchainTime.toFixed(2),
@@ -78,7 +83,6 @@ router.post('/ipfs', upload.single('file'), async (req, res) => {
                 totalTime: totalTime.toFixed(2),
                 gasUsed: txResult.gasUsed.toString()
             },
-
             ipfs: true,
             blockchain: exists,
             duplicate: existsBefore,
@@ -95,20 +99,16 @@ router.post('/ipfs', upload.single('file'), async (req, res) => {
     }
 });
 
-
-// --- ENDPOINT METRICAS ---
+// --- METRICS ---
 router.get('/metrics', (req, res) => {
     try {
-        const metrics = getMetrics();
-        res.json(metrics);
+        res.json(getMetrics());
     } catch (error) {
-        console.error(error);
         res.status(500).json({ error: "Error loading metrics" });
     }
 });
 
-
-// --- ENDPOINT CIDs ---
+// --- CIDs ---
 router.get('/cids', (req, res) => {
     try {
         const path = "/shared/registry.json";
@@ -122,6 +122,91 @@ router.get('/cids', (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+});
+
+// --- ASYNC IA ---
+async function processDocumentAsync(hash, buffer) {
+    try {
+        const data = await pdfParse(buffer);
+        let text = data.text;
+
+        // PDF vacío
+        if (!text || text.trim().length === 0) {
+            aiResults[hash] = { status: "done", data: null };
+            return;
+        }
+
+        // limpieza y truncado
+        text = text.replace(/\s+/g, " ").trim().slice(0, 8000);
+
+        const response = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+                {
+                    role: "user",
+                    content: `
+                    Extrae la información clave y devuelve SOLO JSON válido:
+
+                    {
+                    "tipo": "factura | contrato | informe | otro",
+                    "fecha": "YYYY-MM-DD | null",
+                    "entidades": ["string"],
+                    "idioma": "es | en | otro",
+                    "resumen": "máximo 2 frases, descriptivo y general",
+                    "palabras_clave": ["string"]
+                    }
+
+                    Reglas:
+                    - Usa null si no se encuentra el dato
+                    - tipo debe ser UNA de las opciones dadas
+                    - idioma en formato ISO corto (es, en...)
+                    - palabras_clave máximo 5 elementos
+                    - No inventes datos
+
+                    Texto:
+                    ${text}
+                    `
+                }
+            ]
+        });
+
+        let parsed = null;
+
+        try {
+            const content = response.choices[0].message.content;
+            const match = content.match(/\{[\s\S]*\}/);
+
+            if (match) {
+                parsed = JSON.parse(match[0]);
+            }
+        } catch {
+            parsed = null;
+        }
+
+        aiResults[hash] = {
+            status: "done",
+            data: parsed
+        };
+
+    } catch (error) {
+        console.error(error);
+
+        aiResults[hash] = {
+            status: "done",
+            data: null
+        };
+    }
+}
+
+// --- ENDPOINT IA ---
+router.get('/document/:hash/data', (req, res) => {
+    const { hash } = req.params;
+
+    if (!aiResults[hash]) {
+        return res.json({ status: "pending" });
+    }
+
+    res.json(aiResults[hash]);
 });
 
 export default router;

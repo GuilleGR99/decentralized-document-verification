@@ -2,7 +2,6 @@
    VARIABLES DE TEMA
 ========================= */
 :root {
-  /* DARK MODE */
   --bg: #000000;
   --panel: #000000;
   --border: rgba(255,255,255,0.08);
@@ -11,7 +10,6 @@
 }
 
 .light-mode {
-  /* LIGHT MODE */
   --bg: #f9fafb;
   --panel: #ffffff;
   --border: rgba(0,0,0,0.1);
@@ -55,7 +53,6 @@ header h1 {
   text-transform: uppercase;
 }
 
-/* BOTON TEMA */
 #themeToggle {
   position: absolute;
   top: 15px;
@@ -92,7 +89,6 @@ header h1 {
 #cid-panel { grid-column: 1; grid-row: 2; }
 .metrics { grid-column: 2; grid-row: 2; }
 
-/* Quitar bordes */
 .results,
 .metrics {
   border-right: none;
@@ -173,9 +169,44 @@ button:hover {
   border-bottom: 1px solid var(--border);
   padding-bottom: 6px;
   font-size: 0.85rem;
-  content: " ";
   margin-right: 0.5rem;
   gap: 0.5rem;
+}
+
+/* =========================
+   AI DATA
+========================= */
+#aiData {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border);
+}
+
+#aiData h3 {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+#aiStatus {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+#aiContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#aiContent p {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+  font-size: 0.85rem;
 }
 
 /* =========================
@@ -196,7 +227,7 @@ button:hover {
 }
 
 /* =========================
-   CHARTS CONTAINER
+   CHARTS
 ========================= */
 .charts-container {
   display: grid;
@@ -205,17 +236,16 @@ button:hover {
   margin-bottom: 15px;
 }
 
-/* Cada gráfica */
 .chart-box {
   height: 220px;
   position: relative;
 }
 
-/* Canvas controlado */
 .chart-box canvas {
   width: 100% !important;
   height: 100% !important;
 }
+
 /* =========================
    HISTORIAL
 ========================= */
@@ -230,8 +260,6 @@ button:hover {
 
 #cidList {
   list-style: none;
-  padding: 0;
-  margin: 0;
 }
 
 #cidList li {

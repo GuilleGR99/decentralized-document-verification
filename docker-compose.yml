@@ -39,6 +39,8 @@ services:
         condition: service_completed_successfully
     volumes:
       - shared-data:/shared
+    env_file:
+      - .env
     environment:
       - CONTRACT_FILE=/shared/deployed.json
       - RPC_URL=http://hardhat-node:8545

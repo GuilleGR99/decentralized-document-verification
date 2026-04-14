@@ -4,6 +4,8 @@
 const uploadBtn = document.getElementById("uploadBtn");
 const toggleBtn = document.getElementById("themeToggle");
 const verifyBtn = document.getElementById("verifyBtn");
+const aiStatus = document.getElementById("aiStatus");
+const aiContent = document.getElementById("aiContent");
 
 // =========================
 // EVENTOS
@@ -27,6 +29,7 @@ verifyBtn.addEventListener("click", handleVerify);
 let allCIDs = [];
 let timeChart;
 let gasChart;
+let aiPolling = null;
 
 // =========================
 // INIT
@@ -75,6 +78,16 @@ async function handleUpload() {
 
         resetMetrics();
 
+        // reset IA
+        aiStatus.textContent = "Procesando...";
+        aiContent.innerHTML = "";
+
+        // limpiar polling previo
+        if (aiPolling) {
+        clearInterval(aiPolling);
+        aiPolling = null;
+        }
+
         const res = await fetch("/upload/ipfs", {
             method: "POST",
             body: formData
@@ -90,6 +103,8 @@ async function handleUpload() {
         document.getElementById("hash").textContent = " " + data.hash;
 
         document.getElementById("status").textContent = "Upload complete";
+
+        startAIPolling(data.hash);
 
         // métricas
         if (data.metrics) {
@@ -291,4 +306,52 @@ async function renderChart() {
             }
         }
     });
+}
+
+function startAIPolling(hash) {
+    let attempts = 0;
+    const MAX_ATTEMPTS = 20;
+
+    aiPolling = setInterval(async () => {
+        try {
+            attempts++;
+
+            if (attempts > MAX_ATTEMPTS) {
+                aiStatus.textContent = "Tiempo excedido";
+                clearInterval(aiPolling);
+                aiPolling = null;
+                return;
+            }
+
+            const res = await fetch(`/document/${hash}/data`);
+
+            if (!res.ok) {
+                throw new Error("Polling error");
+            }
+
+            const data = await res.json();
+
+            if (data.status === "pending") {
+                aiStatus.textContent = "Analizando...";
+                return;
+            }
+
+            if (data.status === "done") {
+                clearInterval(aiPolling);
+                aiPolling = null;
+
+                aiStatus.textContent = "Completado";
+                renderAIData(data.data);
+            }
+
+        } catch (error) {
+            console.error(error);
+
+            aiStatus.textContent = "No disponible";
+
+            clearInterval(aiPolling);
+            aiPolling = null;
+        }
+
+    }, 2500);
 }
